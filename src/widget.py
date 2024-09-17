@@ -1,18 +1,28 @@
 from datetime import datetime
+from typing import Any
+import masks
 
-from src.masks import get_mask_card_number
 
-
-def mask_account_card(card_data: str) -> str:
+def mask_account_card(card_input: str) -> str:
     """Функция возвращает строку с замаскированным номером"""
-    card_number = "".join(el if el.isdigit() else "" for el in card_data)
-    card_number_mask = get_mask_card_number(card_number)
-    name_card = "".join("" if el.isdigit() else el for el in card_data)
-    card_data_mask = name_card + card_number_mask
-    return card_data_mask
+    card_number = ""
+    card_name = ""
+    for el in card_input:
+        if el.isdigit():
+            card_number += str(el)
+        else:
+            card_name += str(el)
+    if len(card_number) == 16:
+        number_mask = masks.get_mask_card_number(card_number)
+        card_mask = card_name + number_mask
+        return str(card_mask)
+    else:
+        number_mask = masks.get_mask_account(card_number)
+        card_mask = card_name + number_mask
+        return str(card_mask)
 
 
-print(mask_account_card("Maestro 1596837868705199"))
+print(mask_account_card("Счет 73654108430135874305"))
 
 
 def get_date(user_date: str) -> str:
