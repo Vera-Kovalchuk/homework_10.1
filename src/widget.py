@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Any
-import masks
+from masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(card_input: str) -> str:
@@ -13,16 +13,16 @@ def mask_account_card(card_input: str) -> str:
         else:
             card_name += str(el)
     if len(card_number) == 16:
-        number_mask = masks.get_mask_card_number(card_number)
+        number_mask = get_mask_card_number(card_number)
         card_mask = card_name + number_mask
         return str(card_mask)
     else:
-        number_mask = masks.get_mask_account(card_number)
+        number_mask = get_mask_account(card_number)
         card_mask = card_name + number_mask
         return str(card_mask)
 
 
-print(mask_account_card("Счет 73654108430135874305"))
+print(mask_account_card("Maestro 1596837868705199"))
 
 
 def get_date(user_date: str) -> str:
