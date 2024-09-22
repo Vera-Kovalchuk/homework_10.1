@@ -26,11 +26,13 @@ print(
     )
 )
 
-def sort_by_date(list_of_dict: list[dict[str,Any]], reverse: bool=True) -> list[dict[str,Any]]:
+
+def sort_by_date(list_of_dict: list[dict[str, Any]], reverse: bool = True) -> list[dict[str, Any]]:
     """Функция принимает список словарей и параметр, задающий порядок сортировки по убыванию,
-     возвращает новый список, отсортированный по дате"""
-    sorted_list = sorted(list_of_dict, key=lambda new_list_of_dict: new_list_of_dict['date'], reverse=reverse)
+    возвращает новый список, отсортированный по дате"""
+    sorted_list = sorted(list_of_dict, key=lambda new_list_of_dict: new_list_of_dict["date"], reverse=reverse)
     return sorted_list
+
 
 print(
     sort_by_date(
