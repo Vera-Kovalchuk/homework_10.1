@@ -12,8 +12,7 @@ def filter_by_state(list_of_dict: list[dict[str, Any]], state: str = "EXECUTED")
     """Функция принимает список словарей и опционально значение для ключа
     и возвращает новый список словарей, содержащий только те словари,
     у которых ключ соответствует указанному значению."""
-    return [di for di in list_of_dict if di.get("state") == state
-           ]
+    return [di for di in list_of_dict if di.get("state") == state]
 
 
 print(
