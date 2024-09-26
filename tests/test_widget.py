@@ -9,7 +9,7 @@ from src.widget import get_date, mask_account_card
         ("Счет 73654108430135874305", "Счет **4305"),
     ],
 )
-def test_mask_account_card_basic(card_input: str, expected: str) -> None:
+def test_mask_account_card_original(card_input: str, expected: str) -> None:
     """Тестирование функции с корректным номером карты и счета"""
     assert mask_account_card(card_input) == expected
 
