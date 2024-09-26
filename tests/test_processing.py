@@ -28,21 +28,20 @@ def list_of_dict_of_dates_fixture() -> list:
         ]
 
 
-"""Тесты для функции filter_by_state"""
+"""Тестирование функции filter_by_state"""
 
 
 def test_filter_by_state_original(list_of_dict_fixture: list) -> None:
-    """Тест на срабатывание функции со списком словарей list_of_dict по дефолтным условиям"""
+    """Тестирование на работу функции со списком словарей list_of_dict валидным условиям"""
     assert filter_by_state(list_of_dict_fixture) == list_of_dict_sorted_1
 
 
 def test_filter_by_state_with_state_arg_canceled(list_of_dict_fixture: list) -> None:
-    """Тест на срабатывание функции со списком словарей, где state = 'CANCELED'"""
+    """Тестирование на работу функции со списком словарей, где state = 'CANCELED'"""
     assert filter_by_state(list_of_dict_fixture, state="CANCELED") == list_of_dict_sorted_2
 
 
 """Добавление параметризации функции filter_by_state."""
-
 
 @pytest.mark.parametrize(
     "value, expected",
@@ -51,8 +50,7 @@ def test_filter_by_state_with_state_arg_canceled(list_of_dict_fixture: list) -> 
 def test_filter_by_state_various_input_data(value: list, expected: list) -> None:
     assert filter_by_state(value) == expected
 
-
-"""Тесты для функции sort_by_date"""
+"""Тестирование функции sort_by_date"""
 
 
 def test_sort_by_date_basic(list_of_dict_fixture: list) -> None:
