@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from src.masks import get_mask_account, get_mask_card_number
-
-# from tests.conftest import date_and_time, date_and_time_uncorrectly
+from tests.conftest import date_and_time
 
 
 def mask_account_card(card_input: str) -> str:
@@ -34,6 +33,8 @@ def get_date(user_date: str) -> str:
     format_date = datetime.strptime(user_date, "%Y-%m-%dT%H:%M:%S.%f")
     new_date = format_date.strftime("%d.%m.%Y")
     return new_date
+    if type(date_and_time) is not str:
+        return "Неверный тип данных"
 
 
 print(get_date("2024-03-11T02:26:18.671407"))
