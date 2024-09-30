@@ -1,7 +1,6 @@
 from logging import exception
 
 import pytest
-import sys
 
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 
