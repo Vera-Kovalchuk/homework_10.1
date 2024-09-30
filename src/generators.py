@@ -2,7 +2,7 @@ import sys
 from typing import Generator, Any
 
 
-transactions_list = (
+transactions = (
     [
         {
             "id": 939719570,
@@ -84,13 +84,13 @@ transactions_list = (
 
 
 
-def filter_by_currency(transactions_list, currency):
- """Функция выдает транзакции, где валюта операции соответствует заданной."""
-    if len(transactions_list) > 0:
-        filtered_transactions = filter(lambda transactions_list: transactions_list.get("operationAmount").get("currency").get("code") == currency, transactions_list)
+def filter_by_currency(transactions, currency):
+    """Функция выдает транзакции, где валюта операции соответствует заданной."""
+    if int(len(transactions)) > 0:
+        filtered_transactions = filter(lambda transactions: transactions.get("operationAmount").get("currency").get("code") == currency, transactions)
         return filtered_transactions
     else:
-    return f'Список пуст'
+        return f'Список пуст'
 
 
 def transaction_descriptions(transactions):

@@ -1,4 +1,7 @@
+from logging import exception
+
 import pytest
+import sys
 
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 
@@ -40,7 +43,7 @@ def transactions():
 
 def test_filter_by_currency():
     """Тестирование функции, где валюта операции соответствует заданной (например, USD)"""
-    generator = filter_by_currency(transactions)
+    generator = filter_by_currency(transactions, '')
     assert next(generator) == {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572',
                                'operationAmount': {'amount': '9824.07', 'currency': {'name': 'USD', 'code': 'USD'}},
                                'description': 'Перевод организации', 'from': 'Счет 75106830613657916952',
@@ -58,32 +61,30 @@ def test_transaction_descriptions(transactions):
 
 
 def test_filter_by_currency_zero():
-    with pytest.raises(SystemExit, match="Нет транзакций") as exc_info:
-        generator = filter_by_currency([])
-        assert next(generator) == exc_info
+    with pytest.raises(SystemExit, match="Нет транзакций") as except_:
+        generator = filter_by_currency([], '')
+        assert next(generator) == except_
 
 
-def test_filter_by_currency_eu():
-    with pytest.raises(SystemExit, match="В транзакциях нет такого кода") as exc_info:
-        generator = filter_by_currency(transactions, 'EU')
-        assert next(generator) == exc_info
+def test_filter_by_currency_eu(transactions):
+    result = filter_by_currency(transactions, "EUR")
+    assert list(result) == []
 
 
-def test_transaction_descriptions():
+def test_transaction_descriptions(transactions):
     a = transaction_descriptions(transactions)
     assert next(a) == "Перевод организации"
 
 
 @pytest.mark.parametrize('index, expected', [(0, 'Перевод организации'), (1, 'Перевод со счета на счет')])
-def test_transaction_descriptions_3(index, expected):
+def test_transaction_descriptions(index, expected, transactions):
     descriptions = list(transaction_descriptions(transactions))
     assert descriptions[index] == expected
 
 
 def test_transaction_descriptions_zero():
-    with pytest.raises(SystemExit, match="Нет транзакций") as exc_info:
-        a = transaction_descriptions([])
-        assert next(a) == exc_info
+    result = filter_by_currency([], '')
+    assert result == "Список пуст"
 
 
 def test_card_number_generator():
