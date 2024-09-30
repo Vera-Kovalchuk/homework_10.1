@@ -1,0 +1,104 @@
+import pytest
+
+from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
+
+
+@pytest.fixture
+def transactions():
+    return [{
+        "id": 939719570,
+        "state": "EXECUTED",
+        "date": "2018-06-30T02:08:58.425572",
+        "operationAmount": {
+            "amount": "9824.07",
+            "currency": {
+                "name": "USD",
+                "code": "USD"
+            }
+        },
+        "description": "Перевод организации",
+        "from": "Счет 75106830613657916952",
+        "to": "Счет 11776614605963066702"
+    },
+        {
+            "id": 142264268,
+            "state": "EXECUTED",
+            "date": "2019-04-04T23:20:05.206878",
+            "operationAmount": {
+                "amount": "79114.93",
+                "currency": {
+                    "name": "USD",
+                    "code": "USD"
+                }
+            },
+            "description": "Перевод со счета на счет",
+            "from": "Счет 19708645243227258542",
+            "to": "Счет 75651667383060284188"
+        }
+    ]
+
+
+def test_filter_by_currency():
+    """Тестирование функции, где валюта операции соответствует заданной (например, USD)"""
+    generator = filter_by_currency(transactions)
+    assert next(generator) == {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572',
+                               'operationAmount': {'amount': '9824.07', 'currency': {'name': 'USD', 'code': 'USD'}},
+                               'description': 'Перевод организации', 'from': 'Счет 75106830613657916952',
+                               'to': 'Счет 11776614605963066702'}
+
+
+def test_transaction_descriptions(transactions):
+    """Функция тестирует генератор транзакций"""
+    num = transaction_descriptions(transactions)
+
+    assert next(num) == "Перевод организации"
+    assert next(num) == "Перевод со счета на счет"
+    assert next(num) == "Перевод со счета на счет"
+    assert next(num) == "Перевод с карты на карту"
+
+
+def test_filter_by_currency_zero():
+    with pytest.raises(SystemExit, match="Нет транзакций") as exc_info:
+        generator = filter_by_currency([])
+        assert next(generator) == exc_info
+
+
+def test_filter_by_currency_eu():
+    with pytest.raises(SystemExit, match="В транзакциях нет такого кода") as exc_info:
+        generator = filter_by_currency(transactions, 'EU')
+        assert next(generator) == exc_info
+
+
+def test_transaction_descriptions():
+    a = transaction_descriptions(transactions)
+    assert next(a) == "Перевод организации"
+
+
+@pytest.mark.parametrize('index, expected', [(0, 'Перевод организации'), (1, 'Перевод со счета на счет')])
+def test_transaction_descriptions_3(index, expected):
+    descriptions = list(transaction_descriptions(transactions))
+    assert descriptions[index] == expected
+
+
+def test_transaction_descriptions_zero():
+    with pytest.raises(SystemExit, match="Нет транзакций") as exc_info:
+        a = transaction_descriptions([])
+        assert next(a) == exc_info
+
+
+def test_card_number_generator():
+    """Тестирование генератора с указанными значениями"""
+    numer = card_number_generator(94, 95)
+    assert next(numer) == '0000 0000 0000 0094'
+
+
+def test_card_number_generator_beginning():
+    """Тестирование генератора первоначального значения"""
+    numer = card_number_generator(0, 1)
+    assert next(numer) == '0000 0000 0000 0000'
+
+
+def test_card_number_generator_end():
+    """Тестирование ввода номера карты без пробелов"""
+    numer = card_number_generator(9999999999999999, 9999999999999999)
+    assert next(numer) == '9999 9999 9999 9999'
