@@ -2,7 +2,7 @@ import sys
 from typing import Generator, Any
 
 
-transactions = (
+transactions_list = (
     [
         {
             "id": 939719570,
@@ -83,20 +83,22 @@ transactions = (
 )
 
 
-def filter_by_currency(transactions, str):
-    usd_transactions = filter_by_currency(transactions, "USD")
-    for x in range(2):
-        print(next(usd_transactions))
 
-print(filter_by_currency(transactions, "USD"))
-pass
+def filter_by_currency(transactions_list, currency):
+ """Функция выдает транзакции, где валюта операции соответствует заданной."""
+    if len(transactions_list) > 0:
+        filtered_transactions = filter(lambda transactions_list: transactions_list.get("operationAmount").get("currency").get("code") == currency, transactions_list)
+        return filtered_transactions
+    else:
+    return f'Список пуст'
+
 
 def transaction_descriptions(transactions):
-    descriptions = transaction_descriptions(transactions)
-    pass
-for _ in range(5):
-    print(next(descriptions))
-pass
+    """Функция принимает список словарей с транзакциями и возвращает описание каждой операции по очереди."""
+    if not transactions:
+        return("Нет транзакций")
+    for description_operation in transactions:
+        yield description_operation.get("description")
 # Перевод организации
 # Перевод со счета на cчет
 # Перевод со счета на счет
