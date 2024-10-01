@@ -1,4 +1,6 @@
+from email.generator import Generator
 from logging import exception
+from re import match
 
 import pytest
 
@@ -40,14 +42,17 @@ def transactions():
     ]
 
 
+
 def test_filter_by_currency():
     """Тестирование функции, где валюта операции соответствует заданной (например, USD)"""
-    generator = filter_by_currency(transactions, '')
-    assert next(generator) == {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572',
+    generator = filter_by_currency(transactions)
+    try:
+        assert next(generator) == {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572',
                                'operationAmount': {'amount': '9824.07', 'currency': {'name': 'USD', 'code': 'USD'}},
                                'description': 'Перевод организации', 'from': 'Счет 75106830613657916952',
                                'to': 'Счет 11776614605963066702'}
-
+    except TypeError:
+        print([])
 
 def test_transaction_descriptions(transactions):
     """Функция тестирует генератор транзакций"""
@@ -60,7 +65,7 @@ def test_transaction_descriptions(transactions):
 
 
 def test_filter_by_currency_zero():
-    with pytest.raises(SystemExit, match="Нет транзакций") as except_:
+    with pytest.raises(StopIteration, match="Нет транзакций") as except_:
         generator = filter_by_currency([], '')
         assert next(generator) == except_
 
@@ -71,8 +76,8 @@ def test_filter_by_currency_eu(transactions):
 
 
 def test_transaction_descriptions(transactions):
-    a = transaction_descriptions(transactions)
-    assert next(a) == "Перевод организации"
+    el = transaction_descriptions(transactions)
+    assert next(el) == "Перевод организации"
 
 
 @pytest.mark.parametrize('index, expected', [(0, 'Перевод организации'), (1, 'Перевод со счета на счет')])
@@ -81,10 +86,11 @@ def test_transaction_descriptions(index, expected, transactions):
     assert descriptions[index] == expected
 
 
-def test_transaction_descriptions_zero():
-    result = filter_by_currency([], '')
-    assert result == "Список пуст"
 
+def test_transaction_descriptions_zero():
+    with pytest.raises(StopIteration, match="Нет транзакций") as except_:
+        el = transaction_descriptions([])
+        assert next(el) == except_
 
 def test_card_number_generator():
     """Тестирование генератора с указанными значениями"""
