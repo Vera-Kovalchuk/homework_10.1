@@ -1,7 +1,3 @@
-from email.generator import Generator
-from logging import exception
-from re import match
-
 import pytest
 
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
