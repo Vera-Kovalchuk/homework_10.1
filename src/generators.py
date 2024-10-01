@@ -49,16 +49,15 @@ transactions = [
 ]
 
 
-def filter_by_currency(transactions: list, currency: str):
+def filter_by_currency(transactions: list, currency: str = "USD") -> Generator[Any, Any, Any]:
     """Функция выдает транзакции, где валюта операции соответствует заданной."""
-    if int(len(transactions)) > 0:
-        filtered_transactions = filter(
-            lambda transactions: transactions.get("operationAmount").get("currency").get("code") == currency,
-            transactions,
-        )
-        return filtered_transactions
-    else:
-        return "Список пуст"
+    if transactions == []:
+        return "Нет транзакций"
+    for el in transactions:
+        if el.get("operationAmount").get("currency").get("code") != currency:
+            return "В транзакциях нет такого кода"
+        elif el.get("operationAmount").get("currency").get("code") == currency:
+            yield el
 
 
 def transaction_descriptions(transactions: list):
