@@ -2,12 +2,12 @@ from collections.abc import Callable
 from functools import wraps
 
 
-def log(filename: str|None = None): -> Callable
+def log(filename: str|None = None):
     """Декоратор может логировать начало и конец выполнения функции,
     ее результаты или ошибки."""
-    def decorator(my_func: Callable): -> Callable
+    def decorator(my_func: Callable):
         @wraps(my_func)
-        def wrapper(*args: Any, **kwargs: Any): -> Callable
+        def wrapper(*args, **kwargs):
             if not filename:
                 print(f'{my_func.__name__} started')
                 try:
