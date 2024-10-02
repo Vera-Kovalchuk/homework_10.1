@@ -7,6 +7,7 @@ def my_function(x, y):
 
 
 def test_log_print(capsys):
+    """Тестирование декоратора на выдаваемую информацию"""
     my_function(10, 5)
     captured = capsys.readouterr()
     expected_output = (
@@ -17,7 +18,8 @@ def test_log_print(capsys):
     assert captured.out == expected_output
 
 
-def test_log_print_try(capsys):
+def test_log_print_zero(capsys):
+    """Тестирование функции с делением на ноль"""
     my_function(10, 0)
     captured = capsys.readouterr()
     expected_output = (
@@ -40,7 +42,7 @@ def test_log_print_fail(tmp_path):
 
 
 def test_log_print_fail_try(tmp_path):
-    log_file = tmp_path / "test_output.txt"
+    log_file = tmp_path / "test_result.txt"
 
     @log(log_file)
     def my_function(x, y):
