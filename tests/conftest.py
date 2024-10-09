@@ -1,5 +1,3 @@
-import pytest
-
 """Фикстуры и переменные для test_processing"""
 
 
