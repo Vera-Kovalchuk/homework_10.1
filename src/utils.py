@@ -1,31 +1,22 @@
 import json
-import os
 from json import JSONDecodeError
 from typing import Any
+from src.external_api import currency_conversion
 
 
-def get_operations_metadata(file_path: str) -> Any:
-    """Обрабатывает JSON-файл, принимает путь к файлу в качестве аргумента"""
-    empty_metadata = []
+def financial_transactions(path: str) -> list:
+    """Функция принимает на вход путь до JSON-файла и возвращает список словарей с данными о финансовых транзакциях."""
     try:
-        with open(file_path, 'r', encoding='utf=8') as file:
+        with open(path, encoding="utf-8") as financial_file:
             try:
-                operations = json.load(file)
-                if len(operations) == 0 or type(operations) is not list:
-                    return empty_metadata
-                else:
-                    return operations
-            except json.JSONDecodeError:
-                print('Возникла ошибка при декодировании JSON-файла')
-                return empty_metadata
+                transactions = json.load(financial_file)
+            except JSONDecodeError:
+                return []
+        if not isinstance(transactions, list):
+            return []
+        return transactions
     except FileNotFoundError:
-        print('Файл не найден!')
-        return empty_metadata
-
-
-if __name__ == '__main__':
-    #data = get_operations_metadata('C:\Users\koval\PycharmProjects\homework\data\operations.json')
-    data = os.path.join(os.path.dirname(__file__), "data", "operations.json")
+        return []
 
 
 def transaction_amount(trans: dict, currency: str = "RUB") -> Any:
