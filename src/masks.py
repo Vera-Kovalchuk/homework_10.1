@@ -1,12 +1,24 @@
 import logging
+import os
 from typing import Union
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s: %(filename)s: %(funcName)s %(lineno)s: %(asctime)s - %(message)s",
-    filename="logs/masks.log",
-    filemode="w",
-    )
+# Получаем абсолютный путь до текущей директории
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Создаем путь до файла логов относительно текущей директории
+rel_file_path = os.path.join(current_dir, "../logs/masks.log")
+abs_file_path = os.path.abspath(rel_file_path)
+
+# Добавляем логгер, который записывает логи в файл.
+logger = logging.getLogger("masks")
+logger.setLevel(logging.INFO)
+file_handler = logging.FileHandler(abs_file_path, "w", encoding="utf-8")
+file_formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s: %(message)s"
+)
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+
 card_number_logger = logging.getLogger()
 mask_account_logger = logging.getLogger()
 
