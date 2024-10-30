@@ -1,17 +1,27 @@
 import json
 import logging
+import os
 from json import JSONDecodeError
 from typing import Any
 
 from src.external_api import currency_conversion
 
-logging.basicConfig(
-    level=logging.INFO,
-    file_formatter="%(levelname)s: %(filename)s: %(funcName)s %(lineno)s: %(asctime)s - %(message)s",
-    filename="logs/utils.log",
-    filemode="w",
-)
+# Получаем абсолютный путь до текущей директории
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
+
+# Создаем путь до файла логов относительно текущей директории
+rel_log_file_path = os.path.join(current_dir, "../logs/utils.log")
+abs_log_file_path = os.path.abspath(rel_log_file_path)
+
+
+# Добавляем логгер, который записывает логи в файл.
+logger = logging.getLogger("utils")
+logger.setLevel(logging.INFO)
+file_handler = logging.FileHandler(abs_log_file_path, "w", encoding="utf-8")
+file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
 
 financial_transactions_logger = logging.getLogger()
 transaction_amount_logger = logging.getLogger()
