@@ -1,9 +1,15 @@
 import pytest
 
 from src.processing import filter_by_state, sort_by_date
-from tests.conftest import (list_of_dict_all_states_canceled, list_of_dict_of_dates_sort,
-                            list_of_dict_sort_result_false, list_of_dict_sort_result_true, list_of_dict_sorted_1,
-                            list_of_dict_sorted_2, list_of_dict_without_state)
+from tests.conftest import (
+    list_of_dict_all_states_canceled,
+    list_of_dict_of_dates_sort,
+    list_of_dict_sort_result_false,
+    list_of_dict_sort_result_true,
+    list_of_dict_sorted_1,
+    list_of_dict_sorted_2,
+    list_of_dict_without_state,
+)
 
 
 @pytest.fixture
