@@ -1,7 +1,6 @@
-import csv
 import logging
 
-import openpyxl
+import pandas as pd
 
 from src.utils import current_dir
 
@@ -15,69 +14,29 @@ fileFormatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s: %(message
 fileHandler.setFormatter(fileFormatter)
 logger.addHandler(fileHandler)
 
+logger_csv = logging.getLogger("csv")
+logger_xlsx = logging.getLogger("xlsx")
 
-def read_file_csv(file):
+
+def read_csv(current_dir: str) -> list:
+    """Функция считывает транзакции из csv-файла и преобразует в список словарей с транзакциями"""
+    logger_csv.debug("Открывает csv-файл для чтения")
     try:
-        logger.info("Получаем данные файла")
-        with open(file, "r", encoding="UTF-8") as f:
-            reader = csv.DictReader(f, delimiter=";")
-
-            filtered_data = []
-            for row in reader:
-                if row["id"] == "" or row["state"] == "" or row["date"] == "":
-                    continue
-                filtered_data.append(
-                    {
-                        "id": int(row["id"]),
-                        "state": row["state"],
-                        "date": row["date"],
-                        "operationAmount": {
-                            "amount": row["amount"],
-                            "currency": {"name": row["currency_name"], "code": row["currency_code"]},
-                        },
-                        "from": row.get("from", ""),
-                        "to": row.get("to", ""),
-                        "description": row["description"],
-                    }
-                )
-            return filtered_data
-    except Exception:
-        logger.error("Ошибка!")
-        return []
-
-
-def read_excel(file):
-    try:
-        transactions = []
-        workbook = openpyxl.load_workbook(file)
-        sheet = workbook.active
-        headers = [cell.value for cell in sheet[1]]
-
-        for row in sheet.iter_rows(min_row=2, values_only=True):
-            row_data = dict(zip(headers, row))
-            if row_data["id"] is None or row_data["state"] is None or row_data["date"] is None:
-                continue
-
-            transactions.append(
-                {
-                    "id": int(row_data["id"]),
-                    "state": row_data["state"],
-                    "date": row_data["date"],
-                    "operationAmount": {
-                        "amount": row_data["amount"],
-                        "currency": {"name": row_data["currency_name"], "code": row_data["currency_code"]},
-                    },
-                    "from": row_data.get("from", ""),
-                    "to": row_data.get("to", ""),
-                    "description": row_data["description"],
-                }
-            )
-        return transactions
+        reader_csv = pd.read_csv(current_dir, delimiter=";")
+        logger_csv.debug("csv-файл считан")
     except FileNotFoundError:
-        print(f"Файл не найден: {file}")
+        logger_csv.error("Файл csv не найден")
         return []
+    return reader_csv.to_dict(orient="records")
 
 
-if __name__ == "__main__":
-    print(read_file_csv(PATH_TO_CSV))
-    # print(read_excel(PATH_TO_EXCEL))
+def read_xlsx(current_dir: str) -> list:
+    """Функция считывает транзакции из excel-файла и преобразует в список словарей с транзакциями"""
+    logger_xlsx.debug("Открывает excel-файл для чтения")
+    try:
+        reader_xlsx = pd.read_excel(current_dir)
+        logger_xlsx.debug("excel-файл считан")
+    except FileNotFoundError:
+        logger_xlsx.error("Файл excel не найден")
+        return []
+    return reader_xlsx.to_dict(orient="records")
